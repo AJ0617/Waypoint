@@ -12,7 +12,7 @@ export default defineConfig({
       manifest: {
         name: 'Waypoint — VEX Autonomous Path Planner',
         short_name: 'Waypoint',
-        description: 'Plan, simulate, and export robot-centric VEX V5RC/VIQC autonomous routines.',
+        description: 'Plan, simulate, and export robot-centric VEX/RECF autonomous routines.',
         theme_color: '#e5383b',
         background_color: '#19181a',
         display: 'standalone',
