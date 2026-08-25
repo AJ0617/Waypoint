@@ -46,6 +46,9 @@ export function TopNav({ pathName, teamNumber, darkMode, canUndo, canRedo, onPat
         <button className="btn btn-secondary btn-icon" onClick={onToggleDark} title="Toggle dark mode">
           {darkMode ? <SunIcon /> : <MoonIcon />}
         </button>
+        <a href="/legal.html" target="_blank" rel="noopener" className="text-muted app-nav-legal-link">
+          Privacy &amp; Terms
+        </a>
       </div>
     </div>
   );

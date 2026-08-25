@@ -17,7 +17,17 @@
 .app-nav-spacer {
   margin-left: auto;
   display: flex;
+  align-items: center;
   gap: 8px;
+}
+.app-nav-legal-link {
+  font-size: 11px;
+  text-decoration: none;
+  white-space: nowrap;
+  margin-left: 4px;
+}
+.app-nav-legal-link:hover {
+  color: var(--color-text);
 }
 .app-nav-input-name {
   width: 200px;

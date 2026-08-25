@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>Privacy &amp; Terms — Waypoint</title>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;800&display=swap');
+
+      :root {
+        --color-bg: #19181a;
+        --color-surface: #232224;
+        --color-text: #f3f2f2;
+        --color-muted: color-mix(in srgb, #f3f2f2 65%, transparent);
+        --color-divider: color-mix(in srgb, #f3f2f2 16%, transparent);
+        --color-accent: #e5383b;
+        --font-heading: 'Archivo', system-ui, sans-serif;
+        --font-body: 'Archivo', system-ui, sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--color-bg);
+        color: var(--color-text);
+        font-family: var(--font-body);
+        line-height: 1.6;
+      }
+      main {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 56px 24px 80px;
+      }
+      a {
+        color: var(--color-accent);
+      }
+      .back-link {
+        display: inline-block;
+        margin-bottom: 28px;
+        font-size: 13px;
+        color: var(--color-muted);
+        text-decoration: none;
+      }
+      .back-link:hover {
+        color: var(--color-text);
+      }
+      h1 {
+        font-family: var(--font-heading);
+        font-weight: 800;
+        font-size: 30px;
+        letter-spacing: -0.02em;
+        margin: 0 0 6px;
+      }
+      .updated {
+        font-size: 12px;
+        color: var(--color-muted);
+        margin: 0 0 40px;
+      }
+      h2 {
+        font-family: var(--font-heading);
+        font-weight: 800;
+        font-size: 18px;
+        letter-spacing: -0.01em;
+        margin: 40px 0 6px;
+        padding-top: 20px;
+        border-top: 2px solid var(--color-divider);
+      }
+      h2:first-of-type {
+        border-top: none;
+        padding-top: 0;
+        margin-top: 0;
+      }
+      p {
+        font-size: 14.5px;
+        color: color-mix(in srgb, var(--color-text) 88%, transparent);
+        margin: 0 0 14px;
+      }
+      ul {
+        margin: 0 0 14px;
+        padding-left: 20px;
+      }
+      li {
+        font-size: 14.5px;
+        color: color-mix(in srgb, var(--color-text) 88%, transparent);
+        margin-bottom: 6px;
+      }
+      .kicker {
+        font-family: var(--font-heading);
+        font-weight: 800;
+        font-size: 10px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--color-accent);
+        margin: 0 0 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <a class="back-link" href="/">← Back to Waypoint</a>
+
+      <div class="kicker">Waypoint</div>
+      <h1>Privacy &amp; Terms</h1>
+      <p class="updated">Last updated August 2026</p>
+
+      <h2>Privacy</h2>
+      <p>Waypoint doesn't collect anything. There's no account, no sign-up, and no form that sends your information anywhere.</p>
+      <p>Everything you enter — your team number, auto name, robot dimensions, and every step of your autonomous routine — is saved only in your browser's local storage, on your device. It's never transmitted to us or to any server; there's no backend at all. Clearing your browser's site data for this page deletes it permanently, and we have no copy to recover.</p>
+      <p>Waypoint is a static site hosted on Vercel. Like any web host, Vercel's infrastructure processes standard request data (such as IP address and timestamp) to serve the page and keep it running — we don't have access to this beyond normal hosting operation, and it's covered by <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener">Vercel's own privacy policy</a>. No analytics or tracking scripts are added by the app itself.</p>
+
+      <h2>Terms</h2>
+      <p>Waypoint is a free, independently built planning tool for VEX Robotics autonomous routines. It is provided "as is," with no warranty of any kind, express or implied — including no guarantee that the distance, timing, or path calculations are accurate for your specific robot or field setup.</p>
+      <ul>
+        <li>Always verify a planned routine on the actual field with your actual robot before relying on it in a match.</li>
+        <li>We're not liable for match outcomes, scoring, penalties, or anything else resulting from using this tool.</li>
+        <li>Waypoint is not affiliated with, endorsed by, or sponsored by VEX Robotics, Innovation First, Inc., or the REC Foundation. "VEX" and related marks belong to their respective owners and are referenced here only to describe what this tool is for.</li>
+      </ul>
+      <p>This tool may change or go offline at any time without notice.</p>
+    </main>
+  </body>
+</html>
