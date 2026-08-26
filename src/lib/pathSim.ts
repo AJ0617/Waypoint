@@ -3,6 +3,9 @@ import type { Command, Pose, SimResult, Units } from '../types';
 /** VEX field geometry: a 144"x144" field square sits at (LEFT,TOP) sized SIZE within the IMG_W x IMG_H field.jpg. */
 export const FIELD = { IMG_W: 1320, IMG_H: 779, LEFT: 278, TOP: 14, SIZE: 750, IN: 144 };
 
+/** V5RC/VIQC autonomous period length in seconds. */
+export const AUTON_WINDOW_SEC = 15;
+
 export interface FieldMetrics {
   scale: number;
   dispW: number;
@@ -56,6 +59,20 @@ export function fmtDist(v: number, units: Units): string {
 /** Inverse: a value typed in the display unit -> stored inches. */
 export function parseDist(displayValue: number, units: Units): number {
   return units === 'cm' ? displayValue / 2.54 : displayValue;
+}
+
+/**
+ * Reflects a pose across the field's vertical centerline (the red/blue mirror line on a
+ * symmetric field). Drive commands are already robot-relative and invariant under this
+ * reflection; only the starting pose and turn directions need to flip — see `mirrorCommands`.
+ */
+export function mirrorPose(pose: Pose): Pose {
+  return { x: FIELD.IN - pose.x, y: pose.y, heading: 180 - pose.heading };
+}
+
+/** Flips left/right on turn commands to match a mirrored (`mirrorPose`'d) starting pose; drive commands are unchanged. */
+export function mirrorCommands(commands: Command[]): Command[] {
+  return commands.map((c) => (c.action === 'turn' ? { ...c, dir: c.dir === 'left' ? 'right' : 'left' } : { ...c }));
 }
 
 /**

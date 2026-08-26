@@ -1,4 +1,4 @@
-import { fmtDist, stepDuration } from '../../lib/pathSim';
+import { AUTON_WINDOW_SEC, fmtDist, stepDuration } from '../../lib/pathSim';
 import type { useFieldView } from '../../hooks/useFieldView';
 import type { usePlayback } from '../../hooks/usePlayback';
 import type { usePathState } from '../../hooks/usePathState';
@@ -21,6 +21,7 @@ export function EditorView({ pathApi, sim, playback, fieldView }: EditorViewProp
   const totalDistanceIn = commands.filter((c) => c.action === 'drive').reduce((a, c) => a + c.value, 0);
   const totalDistanceLabel = `TOTAL ${fmtDist(totalDistanceIn, units)} ${units === 'cm' ? 'CM' : 'IN'}`;
   const totalTimeSec = commands.reduce((a, c) => a + stepDuration(c), 0) / 1000;
+  const overTime = totalTimeSec > AUTON_WINDOW_SEC;
 
   return (
     <div className="view">
@@ -48,7 +49,12 @@ export function EditorView({ pathApi, sim, playback, fieldView }: EditorViewProp
           </div>
           <span className="tag tag-accent" style={{ marginLeft: 'auto' }}>{totalDistanceLabel}</span>
           <span className="tag tag-neutral">{commands.length} STEPS</span>
-          <span className="tag tag-neutral">~{totalTimeSec.toFixed(1)}S</span>
+          <span
+            className={`tag ${overTime ? 'tag-warning' : 'tag-neutral'}`}
+            title={overTime ? `Exceeds the ${AUTON_WINDOW_SEC}s autonomous window` : undefined}
+          >
+            ~{totalTimeSec.toFixed(1)}S{overTime ? ` / ${AUTON_WINDOW_SEC}S` : ''}
+          </span>
         </div>
 
         <PlaybackBar

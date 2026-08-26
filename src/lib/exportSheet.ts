@@ -176,7 +176,7 @@ export async function renderSheetCanvas(path: PathState): Promise<HTMLCanvasElem
   return canvas;
 }
 
-function triggerDownload(url: string, filename: string) {
+export function triggerDownload(url: string, filename: string) {
   const a = document.createElement('a');
   a.href = url;
   a.download = filename;
@@ -185,7 +185,7 @@ function triggerDownload(url: string, filename: string) {
   a.remove();
 }
 
-function safeFilename(name: string): string {
+export function safeFilename(name: string): string {
   return name.trim().replace(/[^a-z0-9-_]+/gi, '_').replace(/^_+|_+$/g, '') || 'waypoint-path';
 }
 

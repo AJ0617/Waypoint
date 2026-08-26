@@ -87,6 +87,12 @@ export function ConfigView({ pathApi }: ConfigViewProps) {
               <span className="dot" />BLUE
             </label>
           </div>
+          <button className="btn btn-secondary btn-block" style={{ marginTop: 8 }} onClick={pathApi.mirrorAlliance}>
+            MIRROR TO {path.allianceColor === 'red' ? 'BLUE' : 'RED'} ALLIANCE
+          </button>
+          <p className="text-muted" style={{ fontSize: 11, margin: '6px 0 0' }}>
+            Flips the starting position and every turn direction for the opposite side of a symmetric field.
+          </p>
         </div>
         <p className="text-muted" style={{ fontSize: 12, margin: 0 }}>
           Heading is measured field-relative at the start of the routine only — every step after that is driven relative to the robot, since V5RC autonomous has no field-position feedback by default.

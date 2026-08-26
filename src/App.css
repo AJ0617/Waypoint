@@ -395,6 +395,10 @@
   flex-direction: column;
   gap: 18px;
 }
+.btn-row {
+  display: flex;
+  gap: 8px;
+}
 
 @media (max-width: 980px) {
   .view {

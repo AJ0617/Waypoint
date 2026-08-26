@@ -29,6 +29,8 @@ export function buildThemeVars(dark: boolean, alliance: Alliance): Record<string
     vars['--color-divider'] = 'color-mix(in srgb, var(--color-neutral-100) 25%, transparent)';
     vars['--color-neutral-500'] = 'var(--color-neutral-400)';
     vars['--color-neutral-600'] = 'var(--color-neutral-400)';
+    vars['--color-warning-bg'] = 'color-mix(in srgb, #e0a458 20%, var(--color-neutral-800))';
+    vars['--color-warning-text'] = '#f0cb96';
   }
   return vars;
 }

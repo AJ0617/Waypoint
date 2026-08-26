@@ -29,6 +29,9 @@
   --color-accent-800: #7a1c1e;
   --color-accent-900: #4d170e;
 
+  --color-warning-bg: #fdf1de;
+  --color-warning-text: #8a5a12;
+
   --font-heading: 'Archivo', system-ui, sans-serif;
   --font-heading-weight: 800;
   --font-body: 'Archivo', system-ui, sans-serif;
@@ -278,6 +281,10 @@ input.input::placeholder {
 .tag-neutral {
   background: var(--color-neutral-100);
   color: var(--color-neutral-800);
+}
+.tag-warning {
+  background: var(--color-warning-bg);
+  color: var(--color-warning-text);
 }
 
 /* — navigation — */

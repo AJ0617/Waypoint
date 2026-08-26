@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { fmtDist, metrics, toPx } from '../../lib/pathSim';
 import { exportPdf, exportPng } from '../../lib/exportSheet';
+import { exportPathFile, parsePathFile } from '../../lib/pathFile';
 import { useElementWidth } from '../../hooks/useElementWidth';
 import type { usePathState } from '../../hooks/usePathState';
 import type { SimResult } from '../../types';
@@ -15,6 +16,8 @@ export function ExportView({ pathApi, sim }: ExportViewProps) {
   const { path } = pathApi;
   const { ref, width } = useElementWidth(220, 456, 456);
   const [isExporting, setIsExporting] = useState(false);
+  const [importError, setImportError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const m = metrics(width);
   const waypoints = sim.points.slice(1).map((p, i) => {
@@ -35,6 +38,30 @@ export function ExportView({ pathApi, sim }: ExportViewProps) {
       else await exportPng(path);
     } finally {
       setIsExporting(false);
+    }
+  };
+
+  const handleExportJson = () => {
+    setImportError(null);
+    exportPathFile(path);
+  };
+
+  const handleImportClick = () => {
+    setImportError(null);
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file) return;
+    try {
+      const text = await file.text();
+      const imported = parsePathFile(text);
+      pathApi.importPath(imported);
+      setImportError(null);
+    } catch (err) {
+      setImportError(err instanceof Error ? err.message : "That doesn't look like a Waypoint path file.");
     }
   };
 
@@ -80,6 +107,24 @@ export function ExportView({ pathApi, sim }: ExportViewProps) {
       </div>
 
       <div className="export-controls">
+        <h6 style={{ margin: 0 }}>PATH DATA</h6>
+        <div className="btn-row">
+          <button className="btn btn-secondary" style={{ flex: 1 }} onClick={handleExportJson}>
+            EXPORT .JSON
+          </button>
+          <button className="btn btn-secondary" style={{ flex: 1 }} onClick={handleImportClick}>
+            IMPORT .JSON
+          </button>
+          <input ref={fileInputRef} type="file" accept="application/json,.json" style={{ display: 'none' }} onChange={handleFileChange} />
+        </div>
+        {importError ? (
+          <p style={{ fontSize: 12, margin: 0, color: 'var(--color-accent)' }}>{importError}</p>
+        ) : (
+          <p className="text-muted" style={{ fontSize: 12, margin: 0 }}>
+            Back up this path to a file, or load one from a teammate. Stored only on this device — importing replaces the current path (undo with Ctrl+Z).
+          </p>
+        )}
+        <div className="hr" />
         <h6 style={{ margin: 0 }}>EXPORT PIT SHEET</h6>
         <div className="field">
           <label>FORMAT</label>

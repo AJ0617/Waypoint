@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useHistoryState } from '../lib/history';
-import { dragWaypoint as dragWaypointCalc, parseDist } from '../lib/pathSim';
+import { dragWaypoint as dragWaypointCalc, mirrorCommands, mirrorPose, parseDist } from '../lib/pathSim';
 import { loadActivePath, saveActivePath } from '../lib/persistence';
 import type { Command, CommandAction, Drivetrain, Alliance, Units, ExportFormat, PaperSize, PathState } from '../types';
 
@@ -28,6 +28,12 @@ export function usePathState() {
   const setTeamNumber = (value: string) => commit({ teamNumber: value });
   const setUnits = (units: Units) => commit({ units });
   const setAlliance = (allianceColor: Alliance) => commit({ allianceColor });
+  const mirrorAlliance = () =>
+    commit((s) => ({
+      startPose: mirrorPose(s.startPose),
+      commands: mirrorCommands(s.commands),
+      allianceColor: s.allianceColor === 'red' ? 'blue' : 'red',
+    }));
   const setDrivetrain = (drivetrain: Drivetrain) => commit({ drivetrain });
 
   const setStartX = (displayValue: number) => commit((s) => ({ startPose: { ...s.startPose, x: parseDist(displayValue, s.units) } }));
@@ -37,6 +43,8 @@ export function usePathState() {
 
   const setRobotWidth = (displayValue: number) => commit((s) => ({ robotWidth: parseDist(displayValue, s.units) }));
   const setRobotLength = (displayValue: number) => commit((s) => ({ robotLength: parseDist(displayValue, s.units) }));
+
+  const importPath = (next: PathState) => history.commit(next);
 
   const setExportFormat = (exportFormat: ExportFormat) => commit({ exportFormat });
   const setPaperSize = (paperSize: PaperSize) => commit({ paperSize });
@@ -113,7 +121,9 @@ export function usePathState() {
     setTeamNumber,
     setUnits,
     setAlliance,
+    mirrorAlliance,
     setDrivetrain,
+    importPath,
     setStartX,
     setStartY,
     setStartHeading,
