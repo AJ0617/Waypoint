@@ -3,7 +3,7 @@ import type { MouseEvent } from 'react';
 import { metrics, toPx, FIELD } from '../../lib/pathSim';
 import type { useFieldView } from '../../hooks/useFieldView';
 import { useElementWidth } from '../../hooks/useElementWidth';
-import type { Pose, SimResult } from '../../types';
+import type { Pose, SelectedPoint, SimResult } from '../../types';
 import { FieldSvg } from './FieldSvg';
 import { ZoomInIcon, ZoomOutIcon } from '../icons';
 
@@ -19,6 +19,8 @@ interface FieldCanvasProps {
   onDragCommit: () => void;
   onDragStartPreview: (fx: number, fy: number) => void;
   onDragStartCommit: () => void;
+  selectedPoint: SelectedPoint;
+  onSelectPoint: (p: SelectedPoint) => void;
 }
 
 export function FieldCanvas({
@@ -33,6 +35,8 @@ export function FieldCanvas({
   onDragCommit,
   onDragStartPreview,
   onDragStartCommit,
+  selectedPoint,
+  onSelectPoint,
 }: FieldCanvasProps) {
   const { ref: measureRef, width: dispW } = useElementWidth(280, 900, 780);
   const [draggingIdx, setDraggingIdx] = useState<number | null>(null);
@@ -49,7 +53,7 @@ export function FieldCanvas({
   const mainPts = sim.points.map((p) => { const q = toPx(p.x, p.y, m); return `${q.px.toFixed(1)},${q.py.toFixed(1)}`; }).join(' ');
   const waypoints = sim.points.slice(1).map((p, i) => {
     const q = toPx(p.x, p.y, m);
-    return { px: q.px, py: q.py, num: i + 1, cmdIdx: p.cmdIdx };
+    return { px: q.px, py: q.py, num: i + 1, cmdIdx: p.cmdIdx, selected: selectedPoint?.type === 'waypoint' && selectedPoint.cmdIdx === p.cmdIdx };
   });
   const endPx = toPx(sim.finalPose.x, sim.finalPose.y, m);
 
@@ -77,12 +81,14 @@ export function FieldCanvas({
     e.preventDefault();
     e.stopPropagation();
     setDraggingIdx(cmdIdx);
+    onSelectPoint({ type: 'waypoint', cmdIdx });
   };
 
   const handleStartPoseDragStart = (e: MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     setDraggingStart(true);
+    onSelectPoint({ type: 'start' });
   };
 
   const handlePointerMove = (e: MouseEvent<HTMLDivElement>) => {
@@ -129,7 +135,10 @@ export function FieldCanvas({
             transformOrigin: 'center center',
             cursor: draggingIdx != null || draggingStart ? 'grabbing' : isPanning ? 'grabbing' : fieldZoom !== 1 ? 'grab' : 'default',
           }}
-          onMouseDown={(e) => startPan(e, draggingIdx != null || draggingStart)}
+          onMouseDown={(e) => {
+            onSelectPoint(null);
+            startPan(e, draggingIdx != null || draggingStart);
+          }}
           onMouseMove={handlePointerMove}
           onMouseUp={endAll}
           onMouseLeave={endAll}
@@ -140,7 +149,15 @@ export function FieldCanvas({
             donePts={donePts}
             waypoints={waypoints}
             onWaypointDragStart={handleWaypointDragStart}
-            startMarker={{ px: curPose.px, py: curPose.py, rot: curRot, color: 'var(--color-accent)', footprintWidthPx, footprintLengthPx }}
+            startMarker={{
+              px: curPose.px,
+              py: curPose.py,
+              rot: curRot,
+              color: 'var(--color-accent)',
+              footprintWidthPx,
+              footprintLengthPx,
+              selected: startPoseIsShown && selectedPoint?.type === 'start',
+            }}
             onStartMarkerDragStart={startPoseIsShown ? handleStartPoseDragStart : undefined}
             endMarker={{ px: endPx.px, py: endPx.py }}
           />

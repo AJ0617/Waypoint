@@ -2,7 +2,7 @@ import { AUTON_WINDOW_SEC, fmtDist, stepDuration } from '../../lib/pathSim';
 import type { useFieldView } from '../../hooks/useFieldView';
 import type { usePlayback } from '../../hooks/usePlayback';
 import type { usePathState } from '../../hooks/usePathState';
-import type { SimResult } from '../../types';
+import type { SelectedPoint, SimResult } from '../../types';
 import { FieldCanvas } from './FieldCanvas';
 import { PlaybackBar } from './PlaybackBar';
 import { CommandList } from './CommandList';
@@ -12,9 +12,11 @@ interface EditorViewProps {
   sim: SimResult;
   playback: ReturnType<typeof usePlayback>;
   fieldView: ReturnType<typeof useFieldView>;
+  selectedPoint: SelectedPoint;
+  onSelectPoint: (p: SelectedPoint) => void;
 }
 
-export function EditorView({ pathApi, sim, playback, fieldView }: EditorViewProps) {
+export function EditorView({ pathApi, sim, playback, fieldView, selectedPoint, onSelectPoint }: EditorViewProps) {
   const { path } = pathApi;
   const { units, allianceColor, startPose, commands } = path;
 
@@ -84,6 +86,8 @@ export function EditorView({ pathApi, sim, playback, fieldView }: EditorViewProp
           onDragCommit={pathApi.commitDragWaypoint}
           onDragStartPreview={pathApi.previewDragStart}
           onDragStartCommit={pathApi.commitDragStart}
+          selectedPoint={selectedPoint}
+          onSelectPoint={onSelectPoint}
         />
       </div>
 

@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useHistoryState } from '../lib/history';
-import { dragWaypoint as dragWaypointCalc, mirrorCommands, mirrorPose, parseDist } from '../lib/pathSim';
+import { dragWaypoint as dragWaypointCalc, FIELD, mirrorCommands, mirrorPose, parseDist, simulate } from '../lib/pathSim';
 import { loadActivePath, saveActivePath } from '../lib/persistence';
 import type { Command, CommandAction, Drivetrain, Alliance, Units, ExportFormat, PaperSize, PathState } from '../types';
 
@@ -111,6 +111,24 @@ export function usePathState() {
   };
   const commitDragStart = commitDrag;
 
+  /** Keyboard-nudge a waypoint by (dx, dy) field-inches — one discrete commit per press, same solve as a drag. */
+  const nudgeWaypoint = (cmdIdx: number, dx: number, dy: number) => {
+    const current = simulate(path.commands.slice(0, cmdIdx + 1), path.startPose).finalPose;
+    const fx = Math.max(0, Math.min(FIELD.IN, current.x + dx));
+    const fy = Math.max(0, Math.min(FIELD.IN, current.y + dy));
+    commit({ commands: dragWaypointCalc(path.commands, path.startPose, cmdIdx, fx, fy) });
+  };
+
+  /** Keyboard-nudge the starting pose by (dx, dy) field-inches. */
+  const nudgeStart = (dx: number, dy: number) =>
+    commit((s) => ({
+      startPose: {
+        ...s.startPose,
+        x: Math.max(0, Math.min(FIELD.IN, s.startPose.x + dx)),
+        y: Math.max(0, Math.min(FIELD.IN, s.startPose.y + dy)),
+      },
+    }));
+
   return {
     path,
     undo: history.undo,
@@ -144,5 +162,7 @@ export function usePathState() {
     commitDragWaypoint,
     previewDragStart,
     commitDragStart,
+    nudgeWaypoint,
+    nudgeStart,
   };
 }

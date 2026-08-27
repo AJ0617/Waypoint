@@ -52,6 +52,9 @@ export interface PathState {
 
 export type Tab = 'editor' | 'config' | 'export';
 
+/** The field point currently selected for keyboard nudging (click a waypoint or the start marker). */
+export type SelectedPoint = { type: 'waypoint'; cmdIdx: number } | { type: 'start' } | null;
+
 export interface SimStep {
   cmd: Command;
   before: Pose;

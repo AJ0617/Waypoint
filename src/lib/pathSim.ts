@@ -6,6 +6,10 @@ export const FIELD = { IMG_W: 1320, IMG_H: 779, LEFT: 278, TOP: 14, SIZE: 750, I
 /** V5RC/VIQC autonomous period length in seconds. */
 export const AUTON_WINDOW_SEC = 15;
 
+/** Keyboard-nudge step sizes for a selected waypoint/start pose, in field inches (always inches, regardless of display units — see `Command.value`). */
+export const NUDGE_STEP_IN = 1;
+export const NUDGE_STEP_BIG_IN = 5;
+
 export interface FieldMetrics {
   scale: number;
   dispW: number;

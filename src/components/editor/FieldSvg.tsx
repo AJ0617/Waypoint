@@ -7,6 +7,8 @@ export interface FieldWaypoint {
   py: number;
   num: number;
   cmdIdx: number;
+  /** Selected for keyboard nudging — shown with a highlight ring. */
+  selected?: boolean;
 }
 
 export interface PoseMarker {
@@ -17,6 +19,8 @@ export interface PoseMarker {
   /** Robot chassis footprint, drawn to scale and rotated with the marker. */
   footprintWidthPx?: number;
   footprintLengthPx?: number;
+  /** Selected for keyboard nudging — shown with a highlight ring. */
+  selected?: boolean;
 }
 
 interface FieldSvgProps {
@@ -39,6 +43,9 @@ export function FieldSvg({ m, mainPts, donePts, waypoints, onWaypointDragStart, 
         {donePts && <polyline points={donePts} fill="none" stroke="var(--color-accent)" strokeWidth={4} strokeLinecap="round" />}
         {waypoints?.map((wp) => (
           <g key={wp.cmdIdx}>
+            {wp.selected && (
+              <circle cx={wp.px} cy={wp.py} r={16} fill="none" stroke="var(--color-accent)" strokeWidth={2} strokeDasharray="3 3" style={{ pointerEvents: 'none' }} />
+            )}
             <circle
               cx={wp.px}
               cy={wp.py}
@@ -73,6 +80,9 @@ export function FieldSvg({ m, mainPts, donePts, waypoints, onWaypointDragStart, 
               />
             )}
             {onStartMarkerDragStart && <circle r={16} fill="transparent" />}
+            {startMarker.selected && (
+              <circle r={19} fill="none" stroke="var(--color-accent)" strokeWidth={2} strokeDasharray="3 3" style={{ pointerEvents: 'none' }} />
+            )}
             <rect x={-11} y={-11} width={22} height={22} fill={startMarker.color} stroke="var(--color-bg)" strokeWidth={2.5} />
             <path d="M0 -15 L6 -4 L-6 -4 Z" fill="var(--color-bg)" />
           </g>

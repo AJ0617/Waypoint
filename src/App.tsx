@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { CSSProperties } from 'react';
 import './App.css';
 import { usePathState } from './hooks/usePathState';
@@ -7,7 +7,7 @@ import { useFieldView } from './hooks/useFieldView';
 import { useSimulation } from './hooks/useSimulation';
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
 import { buildThemeVars } from './lib/theme';
-import type { Tab } from './types';
+import type { SelectedPoint, Tab } from './types';
 import { TopNav } from './components/TopNav';
 import { SideRail } from './components/SideRail';
 import { EditorView } from './components/editor/EditorView';
@@ -19,10 +19,14 @@ export default function App() {
   const { path } = pathApi;
   const [tab, setTab] = useState<Tab>('editor');
   const [darkMode, setDarkMode] = useState(false);
+  const [selectedPoint, setSelectedPoint] = useState<SelectedPoint>(null);
 
   const sim = useSimulation(path.commands, path.startPose);
   const playback = usePlayback(path.commands);
   const fieldView = useFieldView();
+
+  // Adding/removing a step shifts command indices, which would leave a stale `cmdIdx` selected.
+  useEffect(() => setSelectedPoint(null), [path.commands.length]);
 
   useKeyboardShortcuts({
     onPlayPause: playback.toggle,
@@ -30,6 +34,13 @@ export default function App() {
     onNextStep: playback.nextStep,
     onUndo: pathApi.undo,
     onRedo: pathApi.redo,
+    hasSelection: tab === 'editor' && selectedPoint != null,
+    onNudge: (dx, dy) => {
+      if (!selectedPoint) return;
+      if (selectedPoint.type === 'start') pathApi.nudgeStart(dx, dy);
+      else pathApi.nudgeWaypoint(selectedPoint.cmdIdx, dx, dy);
+    },
+    onDeselect: () => setSelectedPoint(null),
   });
 
   const themeVars = buildThemeVars(darkMode, path.allianceColor);
@@ -54,7 +65,9 @@ export default function App() {
       />
       <div className="app-body">
         <SideRail tab={tab} onChange={setTab} />
-        {tab === 'editor' && <EditorView pathApi={pathApi} sim={sim} playback={playback} fieldView={fieldView} />}
+        {tab === 'editor' && (
+          <EditorView pathApi={pathApi} sim={sim} playback={playback} fieldView={fieldView} selectedPoint={selectedPoint} onSelectPoint={setSelectedPoint} />
+        )}
         {tab === 'config' && <ConfigView pathApi={pathApi} />}
         {tab === 'export' && <ExportView pathApi={pathApi} sim={sim} />}
       </div>
